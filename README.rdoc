@@ -1,5 +1,5 @@
-Rubyproject
-===========
+= Rubyproject
+
 A Thor based generator to rapidly create a skeleton for a Ruby project as per the example 'Codebreaker' from the book 'The RSpec book'.
 By default The project is setup with Cucumber and Rspec. 
 
@@ -8,8 +8,8 @@ By default The project is setup with Cucumber and Rspec.
  * /features : Cucumber features and step definitions
  * /spec : Rspec specs 
  
-TODO 
-----
+== TODO 
+
  * options 
    * add unit tests
  * tasks
@@ -17,6 +17,6 @@ TODO
    * add_scenario to feature
    * add_specs  
    
-Community
----------
+== Community
+
 Suggestions for improvement are welcome!
