@@ -7,7 +7,9 @@ class Rubyproject < Thor::Group
   argument :app_name
   class_option :skip_rspec, :default => :false
   class_option :skip_cucumber, :default => :false
-  class_option :binaries, :default => :false                                                 
+  class_option :binaries, :default => :false     
+  class_option :unit_test, :default => :false                                              
+  class_option :shoulda, :default => :false                                                                                                                                         
 
   def self.source_root
     File.join(File.dirname(__FILE__), 'templates')
@@ -56,6 +58,20 @@ class Rubyproject < Thor::Group
       empty_directory "#{app_name}"
       template('spec_helper.rb', "#{app_name}/spec_helper.rb")      
       template('app_name/sample_spec.rb', "#{app_name}/#{app_name}_spec.rb")      
+    end
+  end
+
+  def create_unit_test
+    if options[:unit_test]         
+      empty_directory 'test'       
+      inside 'test' do                            
+        template('test_app_name.rb', "test_#{app_name}.rb")      
+      end 
+    elsif options[:shoulda] || yes?("Use shoulda for unit tests?") 
+       empty_directory 'shoulda'       
+       inside 'shoulda' do                            
+         template('test_app_name.rb', "test_#{app_name}.rb")      
+       end
     end
   end
 
