@@ -5,11 +5,11 @@ class Rubyproject < Thor::Group
 
   # Define arguments and options
   argument :app_name
-  class_option :skip_rspec, :default => :false
-  class_option :skip_cucumber, :default => :false
-  class_option :binaries, :default => :false     
-  class_option :unit_test, :default => :false                                              
-  class_option :shoulda, :default => :false                                                                                                                                         
+  class_option :skip_rspec, :type => :boolean, :default => false
+  class_option :skip_cucumber, :type => :boolean, :default => false
+  class_option :binaries, :type => :boolean, :default => false     
+  class_option :unit_test, :type => :boolean, :default => false                                              
+  class_option :shoulda, :type => :boolean, :default => false                                                                                                                                         
 
   def self.source_root
     File.join(File.dirname(__FILE__), 'templates')
@@ -29,7 +29,7 @@ class Rubyproject < Thor::Group
   end
                          
   def create_binaries    
-    if !options[:binaries] || yes?("Create binaries?")                     
+    if options[:binaries] || yes?("Create binaries?")                     
       empty_directory 'bin'
       inside "bin" do      
         template('binary', "#{app_name}")
@@ -39,7 +39,7 @@ class Rubyproject < Thor::Group
   end
 
   def create_cucumber_features       
-    return if !options[:skip_cucumber]
+    return if options[:skip_cucumber]
     empty_directory 'features'       
     inside 'features' do
       template('app_name.feature', "#{app_name}.feature")
@@ -52,7 +52,7 @@ class Rubyproject < Thor::Group
   end
                                                   
   def create_specs                                
-    return if !options[:skip_rspec]         
+    return if options[:skip_rspec]         
     empty_directory 'spec'       
     inside 'spec' do                            
       empty_directory "#{app_name}"
@@ -61,7 +61,7 @@ class Rubyproject < Thor::Group
     end
   end
 
-  def create_unit_test
+  def create_unit_test   
     if options[:unit_test]         
       empty_directory 'test'       
       inside 'test' do                            
