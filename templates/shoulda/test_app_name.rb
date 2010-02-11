@@ -1,3 +1,5 @@
+require 'shoulda'
+
 class #{app_name.camelize}Test < Test::Unit::TestCase
   context "A #{app_name.camelize} instance" do      
     
