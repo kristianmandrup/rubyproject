@@ -1,6 +1,6 @@
 ----
 Application:
-  Name:
+  Name: <%= "#{app_name}" %>
   Origin: mine
   Version: 0.1.0
   Test:
