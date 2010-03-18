@@ -1,22 +1,22 @@
-require 'spec_helper'
+require '../spec_helper'
 
 module <%= app_name.camelize %>
   describe Basic do
-    let(:output)  {double('output').as_null_object}
-    let(:game)    {Game.new(output)}
-
-    describe "#start" do      
-      it "starts the app" do
-        output.should_receive(:puts).with("Welcome to #{app_name}!")
-        game.start('1234')
-      end      
-    end # start
+    context "empty basic" do
+      let(:basic)  { <%= app_name.camelize %>::Basic.new }
+    
+      describe "#basic" do      
+        it "should not have a name" do
+          basic.name.should be_nil
+        end      
+      end 
   
-    context "logged in" do
-      describe "#welcome" do          
-        # ...
-      end  
+      context "named basic" do
+        let(:basic)  { <%= app_name.camelize %>::Basic.new 'blip' }
+        it "should have a name 'blip' " do
+          basic.name.should be == 'blip'        
+        end      
+      end
     end
-  
   end
 end
