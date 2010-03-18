@@ -14,7 +14,7 @@ module Ruby
     class_option :shoulda, :type => :boolean, :default => false
 
     def self.source_root
-      File.join(File.dirname(__FILE__), 'templates')
+      template_path(__FILE__)
     end
 
     def initialize(*args, &block)
@@ -84,7 +84,10 @@ module Ruby
     end
 
     def create_signature   
-      template 'APP.RUBY.signature'       
+      empty_directory '_signatures'
+      inside '_signatures' do
+        template 'APP.RUBY.signature'       
+      end
     end
   
     def copy_licence

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module <%= "#{app_name.camelize}" %>
+module <%= app_name.camelize %>
   describe Basic do
     let(:output)  {double('output').as_null_object}
     let(:game)    {Game.new(output)}

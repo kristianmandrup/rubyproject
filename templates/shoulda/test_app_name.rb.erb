@@ -1,10 +1,10 @@
 require 'shoulda'
 
-class <%= "#{app_name.camelize}" %>Test < Test::Unit::TestCase
-  context "A <%= "#{app_name.camelize}" %> instance" do      
+class <%= app_name.camelize %>Test < Test::Unit::TestCase
+  context "A <%= app_name.camelize %> instance" do      
     
     def setup
-      @basic = <%= "#{app_name.camelize}" %>::Basic.new
+      @basic = <%= app_name.camelize %>::Basic.new
     end
 
     should "do the magic dance" do

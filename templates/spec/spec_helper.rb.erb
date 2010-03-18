@@ -1,1 +1,1 @@
-require '<%= "#{app_name}" %>'
+require '<%= app_name %>'
