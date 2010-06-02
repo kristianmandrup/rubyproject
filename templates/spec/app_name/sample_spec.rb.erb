@@ -1,6 +1,7 @@
-require '../spec_helper'
+require 'require-me'
+Folder.require_spec 'spec_helper', __FILE__
 
-module <%= app_name.camelize %>
+module Hello
   describe Basic do
     context "empty basic" do
       let(:basic)  { <%= app_name.camelize %>::Basic.new }
@@ -10,13 +11,13 @@ module <%= app_name.camelize %>
           basic.name.should be_nil
         end      
       end 
+    end
   
-      context "named basic" do
-        let(:basic)  { <%= app_name.camelize %>::Basic.new 'blip' }
-        it "should have a name 'blip' " do
-          basic.name.should be == 'blip'        
-        end      
-      end
+    context "named basic" do
+      let(:named)  { <%= app_name.camelize %>::Basic.new 'blip' }
+      it "should have a name 'blip' " do
+        named.name.should be == "blip"
+      end      
     end
   end
 end
