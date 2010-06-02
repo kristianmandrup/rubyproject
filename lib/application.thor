@@ -1,7 +1,7 @@
  require 'active_support/inflector'
 
 module Ruby
-  class Application < Thor::Group
+  class App < Thor::Group
     include Thor::Actions
 
     desc "Generates a ruby application"

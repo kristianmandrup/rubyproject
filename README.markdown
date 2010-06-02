@@ -22,19 +22,19 @@ or to force 'yes' to all decisions and deploy
 
 ## Usage ##
 
-`$ thor rubyproject my-ruby-project`    
+`$ thor ruby:app my-ruby-app`    
 
 Also create binaries (executables)
 
-`$ thor rubyproject my-ruby-project --binaries`    
+`$ thor ruby:app my-ruby-project --binaries`    
 
 Create shoulda and unit tests
 
-`$ thor rubyproject my-ruby-project --shoulda --unit-test`    
+`$ thor ruby:app my-ruby-project --shoulda --unit-test`    
 
 Skip rspec and cucumber and only have unit tests
 
-`$ thor rubyproject my-ruby-project --skip-cucumber --skip-rspec --unit-test`    
+`$ thor ruby:app my-ruby-project --skip-cucumber --skip-rspec --unit-test`    
  
 # TODO ##
    
