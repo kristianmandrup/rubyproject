@@ -1,11 +1,11 @@
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "rubyproject"
+    gem.name = "rubyapp"
     gem.summary = %Q{Create a fully configured ruby project}
     gem.description = %Q{Create a fully configured ruby project with a set of common frameworks to choose from}
     gem.email = "kmandrup@gmail.com"
-    gem.homepage = "http://github.com/kristianmandrup/rubyproject"
+    gem.homepage = "http://github.com/kristianmandrup/rubyapp"
     gem.authors = ["Kristian Mandrup"]
     # gem.add_development_dependency "rspec", ">= 2.0.0.beta9"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
@@ -36,7 +36,7 @@ end
 #   version = File.exist?('VERSION') ? File.read('VERSION') : ""
 # 
 #   rdoc.rdoc_dir = 'rdoc'
-#   rdoc.title = "rubyproject #{version}"
+#   rdoc.title = "rubyapp #{version}"
 #   rdoc.rdoc_files.include('README*')
 #   rdoc.rdoc_files.include('lib/**/*.rb')
 # end

@@ -41,7 +41,7 @@ module Ruby
     end
 
     def load_local_settings
-      local_settings_file = File.join(ENV['HOME'], '.rubyproject')
+      local_settings_file = File.join(ENV['HOME'], '.rubyapp')
       if File.exist? local_settings_file
         str = File.open(local_settings_file).read
         arr = str.split(/\n|,|:/).map{|s| s.strip}.map do |n| 

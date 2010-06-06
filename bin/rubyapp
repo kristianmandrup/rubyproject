@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
 # -*- mode: ruby -*-
 
-require 'rubyproject'
+require 'ruby_app'
 Ruby::App.start

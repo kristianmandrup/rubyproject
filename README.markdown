@@ -1,11 +1,10 @@
 # Ruby application generator ##
 
-A Thor based generator to rapidly create a skeleton for a Ruby project as per the example 'Codebreaker' from the book 'The RSpec book'.
-By default The project is setup with Cucumber and Rspec. 
+A Thor based generator to rapidly create a Ruby project with all the infrastructure setup for testing, mocking etc.
 
 * Jeweler to create basic gem setup
-* binaries in \bin if --binaries
-* project library files in /lib
+* Binaries in \bin if --binaries
+* Project library files in /lib
 * Cucumber features, step definitions and basic configurations
 * Rspec2 specs with configurations
 * Unit tests 
@@ -13,28 +12,38 @@ By default The project is setup with Cucumber and Rspec.
 * Mock libraries: mocha, flex, rr, rspec
 * Autotest with grock and fsevent
 * Bundler configuration for gem management
-* require-me gem usage for require DSL
+* Require DSL using require-me gem
 * RCov for test coverage
 * Heckle for test mutations
 
 ## Install ##
 
-Currently requires my fork of Thor on github. Can also be run without installation
+It can be installed as a thor task:
 
-<code>$ thor install</code>
+<code>$ thor install lib/application.thor</code>
 
-or to force 'yes' to all decisions and deploy
-
-<code>$ thor install --force-all --deploy</code>
+Alternatively install it as a gem and use the binary.
+<code>$ gem install rubyapp</code>
 
 ## Usage ##
 
-To run without install, open terminal and stand in the lib dir.
+To run it as a thor task:
+<code>$ thor ruby:app my-ruby-app [options]</code>
 
-`$ thor ruby:app my-ruby-app [options]`    
+Alternatively run it using the binary
+<code>$ rubyapp my-ruby-project [options]</code>
+
+## Options ##
+             
+You can define system wide default options for ruby apps you create (your preferred framework stack) in a <code>~/.rubyapp</code> file.
+The *~* implies ENV['HOME], the environment variable "HOME" on any system. Any options you call the program with explicitly will override the defaults in this file.
+
+The options --rspec2, --cucumber, --license, --autotest, and --bundler are all set to true unless explicitly disabled either in the .rubyapp file or using the negation option when rubyapp is run (see negating boolean options below).
 
 Boolean options:
-To negate a boolean option prefixing it with <code>no-</code>, fx <code>--no-rspec2</code>
+To negate a boolean option prefix it with <code>no-</code>, fx <code>--no-rspec2</code> to disable rspec2 from the project infrastructure creation.
+
+Rubyproject currently supports the following boolean options:
 
 <pre><code>--install_gems
 --jeweler
@@ -55,6 +64,17 @@ To negate a boolean option prefixing it with <code>no-</code>, fx <code>--no-rsp
 </code></pre>
 
 String options:
-<code>--mock_lib</code>
+<code>--mock-lib</code>
 
-Valid values: :rspec, :mocha, :flex, :rr
+Valid *mock-lib* values: rspec, mocha, flexmock, rr
+
+Example:
+<code>$ rubyapp my-ruby-mock-project --mock-lib flexmock</code> 
+
+## Community ##
+Please feel free to fork this project or provide suggestions for improvements, bug fixes etc.
+
+*Share and enjoy!*
+
+Copyright (c) 2010, Kristian Mandrup
+
