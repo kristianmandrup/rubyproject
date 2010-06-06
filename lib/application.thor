@@ -77,22 +77,18 @@ module Ruby
     def configure_rspec                                
       return nil if !options[:rspec2]         
       empty_directory 'spec'       
-      file 'spec/rspec.options', '.rspec'
+      create_file 'spec/rspec.options', '.rspec'
       directory 'autotest'
       inside 'spec' do                            
         empty_directory "#{app_name}"
-        template('spec_helper.rb.erb', "spec_helper.rb")      
-        template('app_name/sample_spec.rb.erb', "#{app_name}/#{app_name}_spec.rb")      
+        template 'spec_helper.rb.erb', "spec_helper.rb"
+        template 'app_name/sample_spec.rb.erb', "#{app_name}/#{app_name}_spec.rb"
       end
     end
 
     def configure_autotest                                
       return nil if !options[:autotest]         
-      file 'autotest.options', '.autotest'     
-      if options[:cucumber]
-        say "$ AUTOFEATURE=false autotest"
-        say "To avoid cucumber features being run"
-      end
+      create_file 'autotest.options', '.autotest'     
     end
 
     def install_gems    
@@ -129,10 +125,9 @@ module Ruby
       empty_directory 'lib'
       inside 'lib' do      
         empty_directory "#{app_name}"
-        template('app_name.rb.erb', "#{app_name}/#{app_name}.rb")
-        template 'app_entrypoint.erb', "#{app_name}.rb")
+        template 'app_name.rb.erb', "#{app_name}/#{app_name}.rb"
+        template 'app_entrypoint.erb', "#{app_name}.rb"
       end
-
     end
     
     def create_gitignore
@@ -164,6 +159,15 @@ module Ruby
       # Make a copy of the MITLICENSE file at the source root
       template "MITLICENSE", "MITLICENSE"
     end   
+
+    def notice
+      if options[:cucumber] 
+        say "---"
+        say "autotest notice:"
+        say "To avoid cucumber features being run, start autotest like this"
+        say "$ AUTOFEATURE=false autotest"
+      end
+    end
    
    protected 
       def skip?(key, question)

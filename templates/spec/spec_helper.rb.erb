@@ -6,6 +6,6 @@ require 'rspec/autorun'
 require '<%= app_name %>'
 
 RSpec.configure do |config|
-  config.mock_with :<%= mock_lib %>
+  config.mock_with :<%= options[:mock_lib] %>
 end
 
