@@ -9,14 +9,28 @@ module Ruby
     # Define arguments and options
     argument :app_name
 
-    class_option :skip_rspec, :type => :boolean, :default => nil
-    class_option :skip_cucumber, :type => :boolean, :default => nil
-    class_option :skip_signatures, :type => :boolean, :default => nil
-    class_option :skip_license, :type => :boolean, :default => nil
+    class_option :rspec2, :type => :boolean, :default => true, :desc => "Use RSpec 2"
+    class_option :cucumber, :type => :boolean, :default => true, :desc => "Use Cucumber"
+    class_option :signatures, :type => :boolean, :default => true, :desc => "Create signature files"
+    class_option :license, :type => :boolean, :default => true, :desc => "Create license file"    
+    class_option :binaries, :type => :boolean, :default => false, :desc => "Create binaries"     
+
+    class_option :test_unit, :type => :boolean, :default => false, :desc => "Use Test-unit"
+    class_option :shoulda, :type => :boolean, :default => false, :desc => "Use Shoulda"
+
+    class_option :mock_lib, :type => :string, :default => 'mocha', :desc => "Which Mocking framework to use"
+    class_option :autotest, :type => :boolean, :default => true, :desc => "Use autotest"
+    class_option :heckle, :type => :boolean, :default => false, :desc => "Use Heckle"    
+
+    class_option :rake, :type => :boolean, :default => false, :desc => "Configure Rakefile for Rake"    
+    class_option :jeweler, :type => :boolean, :default => false, :desc => "Use Jeweler"    
+    class_option :rcov, :type => :boolean, :default => false, :desc => "Use RCov"    
+
+    class_option :require_me, :type => :boolean, :default => false, :desc => "Use require-me gem"    
     
-    class_option :binaries, :type => :boolean, :default => nil     
-    class_option :unit_test, :type => :boolean, :default => nil                                              
-    class_option :shoulda, :type => :boolean, :default => nil
+    class_option :bundler, :type => :boolean, :default => true, :desc => "Create a Gemfile and configure project to use Bundler"
+
+    class_option :install_gems, :type => :boolean, :default => false, :desc => "Install all gems as required by project configuration"
 
     def self.source_root
       # template_path(__FILE__)
@@ -29,7 +43,11 @@ module Ruby
       empty_directory '.'
       FileUtils.cd(destination_root)
     end
-                           
+
+    def create_gemfile
+      return nil if !options[:bundler]
+      template 'Gemfile'
+    end                               
                          
     def create_binaries    
       return nil if skip?(:binaries, 'Create binaries?')                     
@@ -40,8 +58,8 @@ module Ruby
       end
     end
 
-    def create_cucumber_features       
-      return nil if options[:skip_cucumber]
+    def configure_cucumber       
+      return nil if !options[:cucumber]
       empty_directory 'features'       
       inside 'features' do
         template('app_name.feature.erb', "#{app_name}.feature")        
@@ -56,17 +74,42 @@ module Ruby
       end
     end
                                                   
-    def create_specs                                
-      return nil if options[:skip_rspec]         
+    def configure_rspec                                
+      return nil if !options[:rspec2]         
       empty_directory 'spec'       
+      file 'spec/rspec.options', '.rspec'
+      directory 'autotest'
       inside 'spec' do                            
         empty_directory "#{app_name}"
         template('spec_helper.rb.erb', "spec_helper.rb")      
         template('app_name/sample_spec.rb.erb', "#{app_name}/#{app_name}_spec.rb")      
       end
     end
+
+    def configure_autotest                                
+      return nil if !options[:autotest]         
+      file 'autotest.options', '.autotest'     
+      if options[:cucumber]
+        say "$ AUTOFEATURE=false autotest"
+        say "To avoid cucumber features being run"
+      end
+    end
+
+    def install_gems    
+      return nil if !options[:install_gems] 
+      run "gem install heckle" if options[:heckle]
+      run "gem install rcov" if options[:rcov]
+      run "gem install cucumber" if options[:cucumber]
+      run "gem install rspec --pre" if options[:rspec]
+      run "gem install ZenTest autotest-growl autotest-fsevent" if options[:autotest]            
+      run "gem install #{options[:mock_lib]}"
+      run "gem install require-me" if options[:require_me]
+      run "gem install bundler" if options[:bundler]      
+      run "gem install shoulda" if options[:shoulda]      
+      run "gem install test-unit" if options[:test_unit]      
+    end
     
-    def create_unit_test   
+    def configure_shoulda
       return nil if !options[:shoulda]
        empty_directory 'shoulda'       
        inside 'shoulda' do                            
@@ -74,8 +117,8 @@ module Ruby
        end
     end
     
-    def create_should_test
-      return nil if !options[:unit_test]         
+    def configure_test_unit
+      return nil if !options[:test_unit]         
       empty_directory 'test'       
       inside 'test' do                            
         template('test_app_name.rb.erb', "test_#{app_name}.rb")      
@@ -84,17 +127,25 @@ module Ruby
     
     def create_lib
       empty_directory 'lib'
-      inside 'lib' do
-        template('app_name.rb.erb', "#{app_name}.rb")
+      inside 'lib' do      
+        empty_directory "#{app_name}"
+        template('app_name.rb.erb', "#{app_name}/#{app_name}.rb")
+        template 'app_entrypoint.erb', "#{app_name}.rb")
       end
+
     end
     
     def create_gitignore
       template('gitignore', '.gitignore')      
     end      
+
+    def create_readme
+      template('README.markdown', 'README.markdown')      
+    end      
+
     
     def create_signature   
-      return nil if skip?(:skip_signatures, 'Create signature files?') 
+      return nil if skip?(:signatures, 'Create signature files?') 
       empty_directory '_signatures'
       inside '_signatures' do
         template 'APP.RUBY.signature'       
@@ -102,7 +153,7 @@ module Ruby
     end
       
     def copy_licence                                                  
-      if skip?(:skip_license, 'Use MIT license?')
+      if skip?(:license, 'Use MIT license?')
         say "Shame on you…", :red
         return
       end                                                                                                  
@@ -116,7 +167,7 @@ module Ruby
    
    protected 
       def skip?(key, question)
-        options[:key] || options[:key] == nil && !yes?(question)             
+        !options[key] || !yes?(question)
       end  
   end
 end

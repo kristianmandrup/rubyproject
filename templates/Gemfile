@@ -1,0 +1,11 @@
+source :gemcutter
+
+<%= 'gem "require-me"', ">=0.7.6"           if options[:require_me]%>    
+
+group :test do                                
+  <%= 'gem "rspec",     ">=2.0.0.beta.9"'   if options[:rspec] %>  
+  <%= 'gem "cucumber",  ">=0.7.3"'          if options[:cucumber] %> 
+  <%= 'gem "mocha"'                         if options[:mock_lib] == 'mocha' %>
+  <%= 'gem "flexmock"'                      if options[:mock_lib] == 'flexmock' %>
+  <%= 'gem "rr"'                            if options[:mock_lib] == 'rr' %>    
+end
