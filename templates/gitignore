@@ -1,9 +1,4 @@
 .DS_STORE
-<%= "test" if options[:unit_test] %>
-<%= "shoulda" if options[:shoulda] %>
-
-<%= "spec" if !options[:skip_rspec] %>
-<%= "features" if !options[:skip_cucumber] %> 
 
 # yard generated
 doc

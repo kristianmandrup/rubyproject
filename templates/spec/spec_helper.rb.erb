@@ -1,11 +1,11 @@
-<%= "require 'bundler'" if options[:bundler] %>
-<%= "Bundler.setup(:default, :test)" if options[:bundler] %>
-<%= "require 'require-me'" if options[:require_me] %>
+<%= "require 'bundler'" if project_options[:bundler] %>
+<%= "Bundler.setup(:default, :test)" if project_options[:bundler] %>
+<%= "require 'require-me'" if project_options[:require_me] %>
 require 'rspec'
 require 'rspec/autorun'
 require '<%= app_name %>'
 
 RSpec.configure do |config|
-  config.mock_with :<%= options[:mock_lib] %>
+  config.mock_with :<%= project_options[:mock_lib] %>
 end
 

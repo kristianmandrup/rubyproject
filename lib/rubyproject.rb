@@ -96,7 +96,7 @@ module Ruby
       end
       create_gemfile if !skip?(:bundler, 'Use Bundler?')
       create_binaries if !skip?(:binaries, 'Create binaries?')
-      configure_cucumber if !skip?(:cucumber, 'Use Cucumber?')
+      configure_cucumber if !skip?(:cucumber, 'Use Cucumber?'
       configure_rspec2 if project_options[:rspec2]
       configure_autotest if !skip?(:autotest, 'Use autotest?') 
       configure_shoulda if project_options[:shoulda]  
