@@ -27,6 +27,7 @@ module Ruby
     class_option :rake,       :type => :boolean, :desc => "Configure Rakefile for Rake"    
     class_option :jeweler,    :type => :boolean, :desc => "Use Jeweler"    
     class_option :rcov,       :type => :boolean, :desc => "Use RCov"    
+    class_option :fakefs,     :type => :boolean, :desc => "Use FakeFS to fake the File system"
 
     class_option :readme,     :type => :string,  :desc => "README markup language to be used"
 
@@ -65,7 +66,9 @@ module Ruby
 
     def default_settings
       @project_options ||= options.dup 
-      [:rspec2, :cucumber, :license, :autotest, :bundler].each{|key| project_options[key] ||= true}      
+      [:rspec2, :cucumber, :license, :autotest, :bundler].each{|key| project_options[key] ||= true}  
+      project_options[:mock_lib] ||= 'mocha'           
+      project_options[:readme] ||= 'markdown'          
     end
 
     def create_root 
@@ -76,8 +79,10 @@ module Ruby
 
     def install_gems    
       return nil if !project_options[:install_gems] 
+      gems = []
       gems << "heckle" if project_options[:heckle]
       gems << "rcov" if project_options[:rcov]
+      gems << "fakefs" if project_options[:fakefs]
       gems << "cucumber" if project_options[:cucumber]      
       gems << "ZenTest autotest-growl autotest-fsevent" if project_options[:autotest]            
       gems << "#{project_options[:mock_lib]}"
@@ -105,7 +110,7 @@ module Ruby
       configure_rspec2 if project_options[:rspec2]
       configure_autotest if !skip? :autotest, 'Use autotest?'
       configure_shoulda if project_options[:shoulda]  
-      configure_test_unit if project_options[:test_unit]
+      configure_test_unit if project_options[:test_unit]      
       create_gitignore
       create_readme
       create_signatures if project_options[:signatures] 

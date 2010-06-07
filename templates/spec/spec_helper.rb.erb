@@ -3,6 +3,8 @@
 <%= "require 'require-me'" if project_options[:require_me] %>
 require 'rspec'
 require 'rspec/autorun'
+<%= "require 'fakefs'" if project_options[:fakefs] %>
+
 require '<%= app_name %>'
 
 RSpec.configure do |config|

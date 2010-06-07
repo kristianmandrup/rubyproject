@@ -1,8 +1,10 @@
 require 'active_support/inflector'
+require 'thor'
+require 'thor/group'
 
 module Ruby
-  class App < Thor::Group
-    include Thor::Actions
+  class App < ::Thor::Group
+    include ::Thor::Actions
 
     desc "Generates a ruby application"
 
@@ -18,15 +20,18 @@ module Ruby
     class_option :test_unit,  :type => :boolean, :desc => "Use Test-unit"
     class_option :shoulda,    :type => :boolean, :desc => "Use Shoulda"
 
-    class_option :mock_lib,   :type => :string,  :desc => "Which Mocking framework to use"
+    class_option :mock_lib,   :type => :string,  :desc => "Mocking framework to be used"
     class_option :autotest,   :type => :boolean, :desc => "Use autotest"
     class_option :heckle,     :type => :boolean, :desc => "Use Heckle"    
 
     class_option :rake,       :type => :boolean, :desc => "Configure Rakefile for Rake"    
     class_option :jeweler,    :type => :boolean, :desc => "Use Jeweler"    
     class_option :rcov,       :type => :boolean, :desc => "Use RCov"    
+    class_option :fakefs,     :type => :boolean, :desc => "Use FakeFS to fake the File system"
 
-    class_option :require_me, :type => :boolean, :desc => "Use require-me gem"    
+    class_option :readme,     :type => :string,  :desc => "README markup language to be used"
+
+    class_option :require_me, :type => :boolean, :desc => "Use require-me gem for require DSL"    
     
     class_option :bundler,    :type => :boolean, :desc => "Create a Gemfile and configure project to use Bundler"
 
@@ -61,7 +66,9 @@ module Ruby
 
     def default_settings
       @project_options ||= options.dup 
-      [:rspec2, :cucumber, :license, :autotest, :bundler].each{|key| project_options[key] ||= true}      
+      [:rspec2, :cucumber, :license, :autotest, :bundler].each{|key| project_options[key] ||= true}  
+      project_options[:mock_lib] ||= 'mocha'           
+      project_options[:readme] ||= 'markdown'          
     end
 
     def create_root 
@@ -72,8 +79,10 @@ module Ruby
 
     def install_gems    
       return nil if !project_options[:install_gems] 
+      gems = []
       gems << "heckle" if project_options[:heckle]
       gems << "rcov" if project_options[:rcov]
+      gems << "fakefs" if project_options[:fakefs]
       gems << "cucumber" if project_options[:cucumber]      
       gems << "ZenTest autotest-growl autotest-fsevent" if project_options[:autotest]            
       gems << "#{project_options[:mock_lib]}"
@@ -88,28 +97,24 @@ module Ruby
       run "gem install #{gems.join(' ')}"      
     end
 
-    def main_runner            
+    def main_runner
+      say "rubyapp v.0.1.1"            
       if project_options[:jeweler]
         run "jeweler #{appname}" 
       else
         create_app
       end
-      create_gemfile if !skip?(:bundler, 'Use Bundler?')
-      create_binaries if !skip?(:binaries, 'Create binaries?')
-      configure_cucumber if !skip?(:cucumber, 'Use Cucumber?')
+      create_gemfile if !skip? :bundler, 'Use Bundler?'
+      create_binaries if !skip? :binaries, 'Create binaries?'
+      configure_cucumber if !skip? :cucumber, 'Use Cucumber?'
       configure_rspec2 if project_options[:rspec2]
-      configure_autotest if !skip?(:autotest, 'Use autotest?') 
+      configure_autotest if !skip? :autotest, 'Use autotest?'
       configure_shoulda if project_options[:shoulda]  
-      configure_test_unit if project_options[:test_unit]
+      configure_test_unit if project_options[:test_unit]      
       create_gitignore
       create_readme
       create_signatures if project_options[:signatures] 
-      if skip?(:license, 'Use MIT license?')
-        say "Shame on you…", :red
-        return
-      else        
-        copy_licence
-      end                                                                                                  
+      copy_licence if !skip? :license, 'Use MIT license?'
       autotest_feature_notice if project_options[:cucumber]       
     end
 
@@ -136,22 +141,22 @@ module Ruby
     def create_binaries    
       empty_directory 'bin'
       inside "bin" do      
-        template('binary', "#{app_name}")
-        template('binary.bat', "#{app_name}.bat")      
+        template 'binary', "#{app_name}"
+        template 'binary.bat', "#{app_name}.bat"      
       end
     end
 
     def configure_cucumber       
       empty_directory 'features'       
       inside 'features' do
-        template('app_name.feature.erb', "#{app_name}.feature")        
+        template 'app_name.feature.erb', "#{app_name}.feature"
         empty_directory 'step_definitions'
         inside 'step_definitions' do
-          template('app_name_steps.erb', "#{app_name}_steps.rb")                  
+          template 'app_name_steps.erb', "#{app_name}_steps.rb"                  
         end
         empty_directory 'support'
         inside 'support' do                       
-            template('env.rb.erb', 'env.rb')      
+            template 'env.rb.erb', 'env.rb'
         end
       end
     end
@@ -174,23 +179,28 @@ module Ruby
     def configure_shoulda
        empty_directory 'shoulda'       
        inside 'shoulda' do                            
-         template('test_app_name.rb.erb', "test_#{app_name}.rb")      
+         template 'test_app_name.rb.erb', "test_#{app_name}.rb"
        end
     end
     
     def configure_test_unit
       empty_directory 'test'       
       inside 'test' do                            
-        template('test_app_name.rb.erb', "test_#{app_name}.rb")      
+        template 'test_app_name.rb.erb', "test_#{app_name}.rb"
       end 
     end
         
     def create_gitignore
-      template('gitignore', '.gitignore')      
+      template 'gitignore', '.gitignore'
     end      
 
-    def create_readme
-      template('README.markdown', 'README.markdown')      
+    def create_readme                                  
+      case options[:readme]
+      when 'rdoc'
+        template 'readme/README.rdoc', 'README.rdoc'
+      else
+        template 'readme/README.markdown', 'README.markdown'
+      end      
     end      
 
     
