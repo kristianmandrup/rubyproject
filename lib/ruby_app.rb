@@ -116,8 +116,7 @@ module Ruby
       configure_rspec2 if project_options[:rspec2]
       configure_autotest if !skip? :autotest, 'Use autotest?'
       configure_shoulda if project_options[:shoulda]  
-      configure_test_unit if project_options[:test_unit]      
-      configure_fixture_lib
+      configure_test_unit if project_options[:test_unit]
       create_gitignore
       create_readme
       create_signatures if project_options[:signatures] 
