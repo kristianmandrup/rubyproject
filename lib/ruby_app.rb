@@ -132,22 +132,22 @@ module Ruby
     def create_binaries    
       empty_directory 'bin'
       inside "bin" do      
-        template('binary', "#{app_name}")
-        template('binary.bat', "#{app_name}.bat")      
+        template 'binary', "#{app_name}"
+        template 'binary.bat', "#{app_name}.bat"      
       end
     end
 
     def configure_cucumber       
       empty_directory 'features'       
       inside 'features' do
-        template('app_name.feature.erb', "#{app_name}.feature")        
+        template 'app_name.feature.erb', "#{app_name}.feature"
         empty_directory 'step_definitions'
         inside 'step_definitions' do
-          template('app_name_steps.erb', "#{app_name}_steps.rb")                  
+          template 'app_name_steps.erb', "#{app_name}_steps.rb"                  
         end
         empty_directory 'support'
         inside 'support' do                       
-            template('env.rb.erb', 'env.rb')      
+            template 'env.rb.erb', 'env.rb'
         end
       end
     end
@@ -170,27 +170,27 @@ module Ruby
     def configure_shoulda
        empty_directory 'shoulda'       
        inside 'shoulda' do                            
-         template('test_app_name.rb.erb', "test_#{app_name}.rb")      
+         template 'test_app_name.rb.erb', "test_#{app_name}.rb"
        end
     end
     
     def configure_test_unit
       empty_directory 'test'       
       inside 'test' do                            
-        template('test_app_name.rb.erb', "test_#{app_name}.rb")      
+        template 'test_app_name.rb.erb', "test_#{app_name}.rb"
       end 
     end
         
     def create_gitignore
-      template('gitignore', '.gitignore')      
+      template 'gitignore', '.gitignore'
     end      
 
     def create_readme                                  
       case options[:readme]
       when 'rdoc'
-        template('readme/README.rdoc', 'README.rdoc') if       
+        template 'readme/README.rdoc', 'README.rdoc'
       else
-        template('readme/README.markdown', 'README.markdown')      
+        template 'readme/README.markdown', 'README.markdown'
       end      
     end      
 
