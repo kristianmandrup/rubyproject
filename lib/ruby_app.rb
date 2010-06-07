@@ -20,7 +20,7 @@ module Ruby
     class_option :test_unit,  :type => :boolean, :desc => "Use Test-unit"
     class_option :shoulda,    :type => :boolean, :desc => "Use Shoulda"
 
-    class_option :mock_lib,   :type => :string,  :desc => "Which Mocking framework to use"
+    class_option :mock_lib,   :type => :string,  :desc => "Mocking framework to be used"
     class_option :autotest,   :type => :boolean, :desc => "Use autotest"
     class_option :heckle,     :type => :boolean, :desc => "Use Heckle"    
 
@@ -28,7 +28,9 @@ module Ruby
     class_option :jeweler,    :type => :boolean, :desc => "Use Jeweler"    
     class_option :rcov,       :type => :boolean, :desc => "Use RCov"    
 
-    class_option :require_me, :type => :boolean, :desc => "Use require-me gem"    
+    class_option :readme,     :type => :string,  :desc => "README markup language to be used"
+
+    class_option :require_me, :type => :boolean, :desc => "Use require-me gem for require DSL"    
     
     class_option :bundler,    :type => :boolean, :desc => "Create a Gemfile and configure project to use Bundler"
 
