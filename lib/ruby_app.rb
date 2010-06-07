@@ -88,28 +88,24 @@ module Ruby
       run "gem install #{gems.join(' ')}"      
     end
 
-    def main_runner            
+    def main_runner
+      say "rubyapp v.0.1.1"            
       if project_options[:jeweler]
         run "jeweler #{appname}" 
       else
         create_app
       end
-      create_gemfile if !skip?(:bundler, 'Use Bundler?')
-      create_binaries if !skip?(:binaries, 'Create binaries?')
-      configure_cucumber if !skip?(:cucumber, 'Use Cucumber?'
+      create_gemfile if !skip? :bundler, 'Use Bundler?'
+      create_binaries if !skip? :binaries, 'Create binaries?'
+      configure_cucumber if !skip? :cucumber, 'Use Cucumber?'
       configure_rspec2 if project_options[:rspec2]
-      configure_autotest if !skip?(:autotest, 'Use autotest?') 
+      configure_autotest if !skip? :autotest, 'Use autotest?'
       configure_shoulda if project_options[:shoulda]  
       configure_test_unit if project_options[:test_unit]
       create_gitignore
       create_readme
       create_signatures if project_options[:signatures] 
-      if skip?(:license, 'Use MIT license?')
-        say "Shame on you…", :red
-        return
-      else        
-        copy_licence
-      end                                                                                                  
+      copy_licence if !skip? :license, 'Use MIT license?'
       autotest_feature_notice if project_options[:cucumber]       
     end
 
@@ -189,8 +185,13 @@ module Ruby
       template('gitignore', '.gitignore')      
     end      
 
-    def create_readme
-      template('README.markdown', 'README.markdown')      
+    def create_readme                                  
+      case options[:readme]
+      when 'rdoc'
+        template('readme/README.rdoc', 'README.rdoc') if       
+      else
+        template('readme/README.markdown', 'README.markdown')      
+      end      
     end      
 
     
