@@ -207,7 +207,6 @@ module Ruby
         empty_directory 'factories'
       when 'machinist'
         copy_file 'machinist/blueprints.rb', "#{test_dir}/blueprints.rb"
-      end        
       when 'object_daddy'
         copy_file 'object_daddy/model_exemplar.rb', "#{test_dir}/exemplars/model_exemplar.rb"
       when 'blueprints'
