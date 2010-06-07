@@ -4,6 +4,8 @@
 require 'rspec'
 require 'rspec/autorun'
 <%= "require 'fakefs'" if project_options[:fakefs] %>
+<%= "require 'rspec-spies'" if project_options[:spies] %>
+<%= "require 'timecop'" if project_options[:timecop] %>
 
 require '<%= app_name %>'
 

@@ -21,6 +21,8 @@ module Ruby
     class_option :shoulda,    :type => :boolean, :desc => "Use Shoulda"
 
     class_option :mock_lib,   :type => :string,  :desc => "Mocking framework to be used"
+    
+    
     class_option :autotest,   :type => :boolean, :desc => "Use autotest"
     class_option :heckle,     :type => :boolean, :desc => "Use Heckle"    
 
@@ -28,6 +30,8 @@ module Ruby
     class_option :jeweler,    :type => :boolean, :desc => "Use Jeweler"    
     class_option :rcov,       :type => :boolean, :desc => "Use RCov"    
     class_option :fakefs,     :type => :boolean, :desc => "Use FakeFS to fake the File system"
+    class_option :spies,      :type => :boolean, :desc => "Use Rspec-spies"
+    class_option :timecop,    :type => :boolean, :desc => "Use timecop gem"
 
     class_option :readme,     :type => :string,  :desc => "README markup language to be used"
 
@@ -91,7 +95,10 @@ module Ruby
       gems << "shoulda" if project_options[:shoulda]      
       gems << "test-unit" if project_options[:test_unit]      
       gems << "rake" if project_options[:rake]      
-      gems << "jeweler" if project_options[:jeweler]      
+      gems << "jeweler" if project_options[:jeweler]
+      gems << "timecop" if project_options[:timecop]            
+      gems << "object-daddy" if project_options[:factory_lib] == 'OD'            
+      gems << "factory-girl" if project_options[:factory_lib] == 'FG'
 
       run "gem install rspec --pre" if project_options[:rspec]
       run "gem install #{gems.join(' ')}"      
@@ -111,6 +118,7 @@ module Ruby
       configure_autotest if !skip? :autotest, 'Use autotest?'
       configure_shoulda if project_options[:shoulda]  
       configure_test_unit if project_options[:test_unit]      
+      configure_fixture_lib
       create_gitignore
       create_readme
       create_signatures if project_options[:signatures] 
@@ -169,6 +177,8 @@ module Ruby
         empty_directory "#{app_name}"
         template 'spec_helper.rb.erb', "spec_helper.rb"
         template 'app_name/sample_spec.rb.erb', "#{app_name}/#{app_name}_spec.rb"
+        
+        configure_factory_lib 'spec'
       end
     end
 
@@ -182,12 +192,34 @@ module Ruby
          template 'test_app_name.rb.erb', "test_#{app_name}.rb"
        end
     end
-    
+
     def configure_test_unit
       empty_directory 'test'       
       inside 'test' do                            
         template 'test_app_name.rb.erb', "test_#{app_name}.rb"
+        
+        configure_factory_lib 'test'        
       end 
+    end
+
+    def configure_fixture_lib
+      case project_options[:factory_lib]
+      when 'FR'
+        create_file 'db/example_data.rb'
+      end
+    end
+
+    def configure_factory_lib(test_dir)
+      # factory lib setup
+      case project_options[:factory_lib]
+      when 'factory_girl'
+        empty_directory 'factories'
+      when 'machinist'
+        copy_file 'machinist/blueprints.rb', "#{test_dir}/blueprints.rb"
+      end        
+      when 'OD'
+        copy_file 'object_daddy/model_exemplar.rb', "#{test_dir}/exemplars/model_exemplar.rb"
+      end        
     end
         
     def create_gitignore
@@ -195,7 +227,7 @@ module Ruby
     end      
 
     def create_readme                                  
-      case options[:readme]
+      case project_options[:readme]
       when 'rdoc'
         template 'readme/README.rdoc', 'README.rdoc'
       else
@@ -224,11 +256,10 @@ module Ruby
       say "autotest notice:"
       say "To avoid cucumber features being run, start autotest like this"
       say "$ AUTOFEATURE=false autotest"
-    end
-   
-   protected 
-      def skip?(key, question)
-        !project_options[key] || !yes?(question)
-      end  
+    end   
+ 
+    def skip?(key, question)
+      !project_options[key] || !yes?(question)
+    end  
   end
 end
