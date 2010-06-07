@@ -36,9 +36,10 @@ Alternatively run it using the binary
 ## Options ##
              
 You can define system wide default options for ruby apps you create (your preferred framework stack) in a <code>~/.rubyapp</code> file.
-The *~* implies ENV['HOME], the environment variable "HOME" on any system. Any options you call the program with explicitly will override the defaults in this file.
+The <code>~*</code> implies <code>ENV['HOME]</code>, the environment variable "HOME" on any system. 
+Any options you call the program with explicitly will override the defaults in this file.
 
-The options --rspec2, --cucumber, --license, --autotest, and --bundler are all set to true unless explicitly disabled either in the .rubyapp file or using the negation option when rubyapp is run (see negating boolean options below).
+The options <code>--rspec2, --cucumber, --license, --autotest, and --bundler</code> are all set to true unless explicitly disabled either in the <code>.rubyapp</code> file or using the negation option when rubyapp is run (see negating boolean options below).
 
 Boolean options:
 To negate a boolean option prefix it with <code>no-</code>, fx <code>--no-rspec2</code> to disable rspec2 from the project infrastructure creation.
@@ -55,21 +56,30 @@ Rubyproject currently supports the following boolean options:
 --binaries
 --test_unit
 --shoulda
---mock_lib
 --autotest
 --heckle
 --rake
---rcov
+--rcov   
+--timecop
+--fakefs
 --require_me
 </code></pre>
 
 String options:
 <code>--mock-lib</code>
+<code>--factory-lib</code>
 
+Mock-lib:
 Valid *mock-lib* values: rspec, mocha, flexmock, rr
 
 Example:
 <code>$ rubyapp my-ruby-mock-project --mock-lib flexmock</code> 
+
+Factory-lib:
+Valid *factory-lib* values: factory_girl, machinist, object_daddy, blueprints
+
+Example:
+<code>$ rubyapp my-ruby-mock-project --factory-lib factory_girl</code> 
 
 ## Community ##
 Please feel free to fork this project or provide suggestions for improvements, bug fixes etc.

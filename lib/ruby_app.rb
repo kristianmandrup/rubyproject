@@ -96,10 +96,9 @@ module Ruby
       gems << "test-unit" if project_options[:test_unit]      
       gems << "rake" if project_options[:rake]      
       gems << "jeweler" if project_options[:jeweler]
-      gems << "timecop" if project_options[:timecop]            
-      gems << "object-daddy" if project_options[:factory_lib] == 'OD'            
-      gems << "factory-girl" if project_options[:factory_lib] == 'FG'
-
+      gems << "timecop" if project_options[:timecop]                  
+      
+      gems << "#{project_options[:factory_lib]}"
       run "gem install rspec --pre" if project_options[:rspec]
       run "gem install #{gems.join(' ')}"      
     end
@@ -201,14 +200,6 @@ module Ruby
         configure_factory_lib 'test'        
       end 
     end
-
-    def configure_fixture_lib
-      case project_options[:factory_lib]
-      when 'FR'
-        create_file 'db/example_data.rb'
-      end
-    end
-
     def configure_factory_lib(test_dir)
       # factory lib setup
       case project_options[:factory_lib]
@@ -217,8 +208,10 @@ module Ruby
       when 'machinist'
         copy_file 'machinist/blueprints.rb', "#{test_dir}/blueprints.rb"
       end        
-      when 'OD'
+      when 'object_daddy'
         copy_file 'object_daddy/model_exemplar.rb', "#{test_dir}/exemplars/model_exemplar.rb"
+      when 'blueprints'
+        empty_directory 'blueprint'
       end        
     end
         

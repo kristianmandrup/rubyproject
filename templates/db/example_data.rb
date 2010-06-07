@@ -1,3 +1,0 @@
-module FixtureReplace
-  # fixture data here...  
-end
